@@ -20,6 +20,7 @@ Vue 3 (`<script setup>` + TypeScript) · Vite · Tailwind 3 · vue-router 4 · S
 ## Convenciones
 - Todo el texto de interfaz y los comentarios van **en español**.
 - Estilo: clases de Tailwind directas en el template; utilidades propias en `src/style.css` (`btn`, `btn-primary`, `field`, `eyebrow`). Bordes casi rectos (radio 2px). Paleta y tipografías en `tailwind.config.js`.
+- Marca: logos en `public/brand/` (no editarlos ni recolorearlos). Color de acción solo `brand-600`; `brand-slate` solo para acentos; sobre fondos oscuros el texto va en `paper`/`greige`, nunca teal. Sin hex en componentes: usar tokens.
 - Cada página del admin abre con `<p class="eyebrow">Panel</p>` + `<h1 class="mt-2 text-4xl">`.
 - Acceso a datos solo desde `src/lib/*`; las vistas no llaman a `supabase` directamente (excepto `LoginView` para ver si está configurado).
 - Si faltan `VITE_SUPABASE_*`, el sitio público cae a datos de ejemplo (`src/data/properties.ts`) y el admin avisa que falta configurar.

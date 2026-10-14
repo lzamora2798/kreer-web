@@ -24,7 +24,7 @@ Estado: POC funcional. El alcance completo (CRM, paneles por rol, portal con SEO
 - [ ] Favoritos persistentes (localStorage) o eliminar el corazón.
 - [ ] Reemplazar los datos entre corchetes por los reales de KREER: teléfono, correo y dirección (`ContactForm`), cifras (`AboutStats`), precios del selector (`HeroSearch`), enlaces del `AppFooter`.
 - [ ] Página 404 propia (hoy cualquier ruta desconocida redirige a `/`).
-- [ ] SEO: título/descripción por página, Open Graph, `sitemap`, favicon/logo definitivo.
+- [ ] SEO: título/descripción por página, Open Graph (imagen social con el logo), `sitemap`.
 
 ## 4. Proyecto / calidad
 - [ ] `git init` (el proyecto aún no está bajo control de versiones).
@@ -36,6 +36,10 @@ Estado: POC funcional. El alcance completo (CRM, paneles por rol, portal con SEO
 - [ ] Si una subida de fotos falla a medias, quedan archivos huérfanos en Storage.
 
 ## Preguntas abiertas para KREER
+- Marca: el correo repite `#457d80` dos veces. ¿Falta un tercer color? (`TODO(marca)` en `tailwind.config.js`; no se inventó uno.) Ojo: el beige del logo mide `#CAC5BB` y podría ser ese tercer color.
+- Marca: los PNG del logo miden `#457d8b`, no `#457d80`. ¿Cuál es el correcto? Si es `#457d8b`, cambiar `brand-600` y recalcular la escala (blanco sobre él da 4,61:1, sigue pasando AA).
+- Marca: pedir el logotipo completo ("kreer Grupo inmobiliario") en versión blanca; hoy header, footer y barra del admin usan solo la K blanca.
+- Marca: falta el círculo teal con K beige (llegaron 5 archivos, no 6).
 - ¿Cuál es el plan completo de fases (el código cita Fase 2 y Fase 6)?
 - ¿Las consultas deben avisar por correo/WhatsApp a un asesor además de guardarse?
 - ¿Las consultas se asignan a un asesor, o las atiende cualquiera?

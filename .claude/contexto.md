@@ -33,8 +33,13 @@ El guard (`router.ts`) solo verifica que haya sesión. El rol de admin se compru
 3. Añadir un ítem al arreglo `nav` de `AdminLayout.vue`: `label`, `to`, `icon` (path SVG 24×24, trazo 1.5) y `match(path)` para resaltarlo como activo (así "Propiedades" también se resalta en `/admin/propiedades/...`).
 
 ## Sistema de diseño
-- Colores (`tailwind.config.js`): `brand` 300–700 (azul-verdoso, principal `brand-600`), `night` (fondo oscuro), `paper` (fondo claro), `sand`, `sage`, `greige`, `line` (bordes), `ink` / `ink-body` / `ink-soft` (textos).
-- Tipografías: `font-display` Cormorant Garamond (títulos, logo con `tracking-[0.25em]`), `font-sans` Jost (cuerpo).
+- Colores (`tailwind.config.js`; ahí cada token está marcado como MARCA o DERIVADO):
+  - **Marca** (correo de la cliente): `brand-600` `#457d80`, único color de acción (botones primarios, enlaces, estados activos); `brand-slate` `#48657a`, secundario, solo acentos (eyebrows, íconos decorativos), nunca como segundo color de acción. `greige` `#CAC5BB` se midió en el círculo beige del logo (no viene en el correo).
+  - **Derivados** (no son marca, se pueden ajustar): `brand-300/400/500/700` (mismo matiz que `brand-600`; `700` es el hover del botón primario), `night` (fondo oscuro), `paper` (fondo claro), `sand`, `sage`, `line` (bordes), `ink` / `ink-body` / `ink-soft` (textos).
+  - Sobre `night` los teals de marca no pasan como texto (3,3:1 y 2,5:1): usar `paper` o `greige`.
+  - Sin hex en componentes: todo color va por token (los tonos de `src/data/properties.ts` son nombres de token).
+- Tipografías: `font-display` Cormorant Garamond (títulos), `font-sans` Jost (interfaz y cuerpo).
+- Logos en `public/brand/` (PNG, sin editar ni recolorear con filtros): `logo-full-teal` (isotipo + "kreer Grupo inmobiliario"), `logo-wordmark-teal` (sin isotipo), `logo-k-teal`, `logo-k-white` (K sola, para fondos oscuros), `logo-circle-beige` (círculo beige con K teal; de él salen el favicon y el apple-touch-icon). No existe versión blanca del logotipo completo: sobre fondos oscuros (header, footer, barra del admin) se usa la K blanca. Los originales están en `brand/` (fuera de git).
 - Radio de borde 2px en todo (estética sobria, sin esquinas redondeadas).
 - Utilidades en `src/style.css`: `.btn`, `.btn-primary`, `.btn-ghost`, `.field` (input/select/textarea), `.eyebrow` (etiqueta pequeña en mayúsculas).
 - Íconos: SVG en línea, `stroke="currentColor"`, `stroke-width="1.5"`. No hay librería de íconos.
