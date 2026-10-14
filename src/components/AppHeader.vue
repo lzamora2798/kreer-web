@@ -14,11 +14,8 @@ const links = [
 <template>
   <header class="absolute inset-x-0 top-0 z-20 text-paper">
     <div class="mx-auto flex h-20 max-w-6xl items-center justify-between px-5">
-      <a href="#" class="flex items-center gap-3">
-        <span class="grid h-9 w-9 place-items-center rounded-full bg-brand-600">
-          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 18V6m0 6 8-6m-8 6 8 6" /></svg>
-        </span>
-        <span class="font-display text-2xl tracking-[0.25em] text-greige">KREER</span>
+      <a href="#" class="flex items-center">
+        <img src="/brand/logo-k-white.png" alt="KREER Grupo Inmobiliario" width="37" height="40" class="h-10 w-auto" />
       </a>
       <nav class="hidden items-center gap-8 text-sm md:flex">
         <a v-for="l in links" :key="l.label" :href="l.href" class="text-paper/80 transition hover:text-paper">{{ l.label }}</a>
