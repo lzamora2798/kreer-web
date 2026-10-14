@@ -22,7 +22,9 @@ async function submit() {
   <main class="grid min-h-screen place-items-center bg-night px-5">
     <form class="w-full max-w-sm bg-paper p-8" @submit.prevent="submit">
       <p class="eyebrow">Administración</p>
-      <h1 class="mt-2 text-4xl">KREER</h1>
+      <h1 class="mt-4">
+        <img src="/brand/logo-full-teal.png" alt="KREER Grupo Inmobiliario" width="176" height="66" class="h-auto w-44" />
+      </h1>
       <p v-if="!supabase" class="mt-4 text-sm text-red-700">Falta configurar Supabase (variables VITE_SUPABASE_*).</p>
       <div class="mt-6 grid gap-4">
         <input v-model="email" type="email" class="field" placeholder="Correo" autocomplete="username" required />
