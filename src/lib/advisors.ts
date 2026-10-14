@@ -1,10 +1,23 @@
 import { supabase } from './supabase'
 
+export type Role = 'admin' | 'gerente' | 'asesor'
+
+export const ROLES: { value: Role; label: string }[] = [
+  { value: 'admin', label: 'Administrador' },
+  { value: 'gerente', label: 'Gerencia' },
+  { value: 'asesor', label: 'Asesor' },
+]
+
+/** Una persona del equipo (tabla `advisors`). Sin `user_id` todavía no ha ingresado al panel. */
 export interface Advisor {
   id: string
   name: string
-  whatsapp: string
+  whatsapp: string | null
   email: string
+  role: Role
+  active: boolean
+  assign_weight: number
+  user_id: string | null
 }
 
 function db() {
@@ -13,7 +26,7 @@ function db() {
 }
 
 export function emptyAdvisor(): Advisor {
-  return { id: crypto.randomUUID(), name: '', whatsapp: '', email: '' }
+  return { id: crypto.randomUUID(), name: '', whatsapp: null, email: '', role: 'asesor', active: true, assign_weight: 1, user_id: null }
 }
 
 /**
@@ -38,13 +51,20 @@ export function whatsappLink(digits: string, propertyTitle?: string): string {
 }
 
 export async function listAdvisors(): Promise<Advisor[]> {
-  const { data, error } = await db().from('advisors').select('id,name,whatsapp,email').order('name')
+  const { data, error } = await db().from('advisors').select('id,name,whatsapp,email,role,active,assign_weight,user_id').order('name')
   if (error) throw error
   return data as Advisor[]
 }
 
 export async function saveAdvisor(a: Advisor) {
-  const { error } = await db().from('advisors').upsert(a)
+  // user_id solo lo vincula la base de datos en el primer ingreso (my_staff), nunca el formulario.
+  const { user_id: _u, ...row } = a
+  const { error } = await db().from('advisors').upsert(row)
+  if (error) throw error
+}
+
+export async function setAdvisorActive(id: string, active: boolean) {
+  const { error } = await db().from('advisors').update({ active }).eq('id', id)
   if (error) throw error
 }
 

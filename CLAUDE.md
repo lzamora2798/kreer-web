@@ -7,14 +7,15 @@ Vue 3 (`<script setup>` + TypeScript) · Vite · Tailwind 3 · vue-router 4 · S
 
 ## Comandos
 - `npm run dev` — servidor de desarrollo
-- `npm run build` — `vue-tsc -b && vite build` (úsalo para verificar tipos; no hay tests ni linter)
+- `npm run build` — `vue-tsc -b && vite build` (úsalo para verificar tipos; no hay linter)
+- `npm run test:db` — prueba las migraciones y permisos (RLS) en un Postgres en memoria; correrlo antes de ejecutar una migración nueva en Supabase
 
 ## Dónde está cada cosa
 - `src/views/HomeView.vue` + `src/components/` — sitio público (una sola página con anclas `#propiedades`, `#vender`, `#contacto`…)
-- `src/views/admin/` — panel: `AdminLayout` (menú lateral), `LoginView`, `PropertyList`, `PropertyForm`, `AdvisorList`
+- `src/views/admin/` — panel: `AdminLayout` (menú lateral), `LoginView`, `PropertyList`, `PropertyForm`, `TeamList` (equipo y roles)
 - `src/lib/` — acceso a datos: `supabase.ts` (cliente, `null` sin env), `auth.ts`, `properties.ts`, `advisors.ts`
 - `src/router.ts` — rutas; `/admin/*` exige sesión (`meta.requiresAuth`)
-- `supabase/*.sql` — esquema; se ejecuta a mano en Supabase → SQL Editor
+- `supabase/*.sql` — esquema y migraciones numeradas; se ejecutan a mano, en orden, en Supabase → SQL Editor. `supabase/tests/` — pruebas con PGlite
 
 ## Convenciones
 - Todo el texto de interfaz y los comentarios van **en español**.

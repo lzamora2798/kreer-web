@@ -26,14 +26,16 @@ Parte de [plan-crm.md](plan-crm.md) y del código actual. Es un documento vivo: 
 Se ejecutan **una vez, en orden**, en Supabase → SQL Editor (igual que `002_asesores.sql`). Son aditivas e idempotentes (`if not exists`, `create or replace`, `drop policy if exists`). No tocan datos existentes.
 
 ### `supabase/003_roles.sql` — roles y vínculo con usuarios
-- [ ] `advisors` + columnas: `user_id` (único, → `auth.users`), `role` (`admin|gerente|asesor`, default `asesor`), `active` (default `true`), `assign_weight` (1–10, default 1), `last_assigned_at`.
-- [ ] `advisors.whatsapp` pasa a **nullable** (admin/gerente no siempre tienen). Índice único `lower(email)` cuando no está vacío.
-- [ ] **Sembrar** desde `admins`: cada admin actual pasa a ser fila de `advisors` con `role='admin'` y su `user_id` (nombre provisional = parte local del correo).
-- [ ] Funciones (`security definer`, `stable`, `set search_path = public`): `staff_role()`, `current_advisor_id()`, `is_staff()`, `is_manager()` (admin|gerente), `can_manage_team()` (admin).
-- [ ] **`is_admin()` se redefine** = `is_manager()` **o** existe en la tabla legada `admins`. El respaldo legado evita bloquear a nadie si el sembrado falla. Así siguen funcionando, sin tocarlas, las políticas de `properties` y de Storage.
-- [ ] Políticas de `advisors`: lectura para cualquier staff; escritura solo `can_manage_team()` (se elimina `admin all advisors`).
-- [ ] Política nueva en `properties`: **staff puede leer todas** (borradores incluidos), para que el asesor vea el catálogo.
-- [ ] `my_staff()` — `security definer`: si el usuario tiene `advisors.user_id` la devuelve; si no, vincula la fila con su correo **solo si el correo está confirmado** (`auth.users.email_confirmed_at`) y `active`. Devuelve `id, name, role, active`.
+- [x] `advisors` + columnas: `user_id` (único, → `auth.users`), `role` (`admin|gerente|asesor`, default `asesor`), `active` (default `true`), `assign_weight` (1–10, default 1), `last_assigned_at`.
+- [x] `advisors.whatsapp` pasa a **nullable** (admin/gerente no siempre tienen). Índice único `lower(email)` cuando no está vacío.
+- [x] **Sembrar** desde `admins`: cada admin actual pasa a ser fila de `advisors` con `role='admin'` y su `user_id` (nombre provisional = parte local del correo).
+- [x] Funciones (`security definer`, `stable`, `set search_path = public`): `staff_role()`, `current_advisor_id()`, `is_staff()`, `is_manager()` (admin|gerente), `can_manage_team()` (admin).
+- [x] **`is_admin()` se redefine** = `is_manager()` **o** existe en la tabla legada `admins`. El respaldo legado evita bloquear a nadie si el sembrado falla. Así siguen funcionando, sin tocarlas, las políticas de `properties` y de Storage.
+- [x] Políticas de `advisors`: lectura para cualquier staff; escritura solo `can_manage_team()` (se elimina `admin all advisors`).
+- [x] Política nueva en `properties`: **staff puede leer todas** (borradores incluidos), para que el asesor vea el catálogo.
+- [x] `my_staff()` — `security definer`: si el usuario tiene `advisors.user_id` la devuelve; si no, vincula la fila con su correo **solo si el correo está confirmado** (`auth.users.email_confirmed_at`) y `active`. Devuelve `id, name, role, active`.
+- [x] **Agregado:** trigger `advisors_keep_admin` (no deja desactivar, degradar ni borrar al último admin) y, en `my_staff()`, auto-alta de un admin legado que se agregue a la tabla `admins` después de la migración.
+- Estado: **hecha y probada** (16 pruebas en `003_roles.test.mjs`). Pendiente: ejecutarla en el Supabase real.
 
 ### `supabase/004_crm_core.sql` — tablas, triggers, RLS
 | Tabla | Columnas clave |
@@ -43,27 +45,36 @@ Se ejecutan **una vez, en orden**, en Supabase → SQL Editor (igual que `002_as
 | `lead_events` | `lead_id` (cascade), `advisor_id` (null = sistema), `kind` (`nota|llamada|whatsapp|correo|visita|cambio_etapa|asignacion|sistema`), `direction` (`entrante|saliente`), `body`, `from_stage`, `to_stage`, `meta jsonb`, `created_at`. **Inmutable**: sin políticas de update ni delete |
 | `tasks` | `lead_id` (opcional), `advisor_id`, `title`, `kind` (`llamar|whatsapp|correo|visita|otro`), `due_at`, `done_at`, `created_by` |
 
-- [ ] Restricción: `stage = 'perdido'` exige `lost_reason`.
-- [ ] Índices: `leads(advisor_id, stage)`, `leads(stage)`, `leads(created_at)`, `lead_events(lead_id, created_at desc)`, `lead_events(kind, created_at)`, `tasks(advisor_id, due_at) where done_at is null`.
-- [ ] **Triggers** (las funciones que escriben eventos son `security definer`, si no RLS las bloquea):
+- [x] Restricción: `stage = 'perdido'` exige `lost_reason`.
+- [x] Índices: `leads(advisor_id, stage)`, `leads(stage)`, `leads(created_at)`, `lead_events(lead_id, created_at desc)`, `lead_events(kind, created_at)`, `tasks(advisor_id, due_at) where done_at is null`.
+- [x] **Triggers** (las funciones que escriben eventos son `security definer`, si no RLS las bloquea):
   - `leads` antes de insertar/actualizar: `assigned_at` al cambiar de asesor; `closed_at` al pasar a ganado/perdido (y se limpia al reabrir); `first_contact_at` al pasar a cualquier etapa **distinta de `nuevo` y `perdido`**; `last_activity_at`/`updated_at`; `created_at`, `source` y `contact_id` inmutables.
   - `leads` después: evento `cambio_etapa` al cambiar de etapa, `asignacion` al cambiar de asesor, `sistema` al crearse.
   - `lead_events` después de insertar: sube `last_activity_at` y fija `first_contact_at` si el evento es `llamada|whatsapp|correo|visita`.
-- [ ] **RLS** (todas con RLS activo):
+- [x] **RLS** (todas con RLS activo):
   - `leads`: asesor lee/actualiza `advisor_id = current_advisor_id()` y su `with check` impide pasárselo a otro; manager todo; borrar solo manager. Insertar solo por RPC.
   - `contacts`: manager todo; asesor los de sus leads o creados por él.
   - `lead_events`: lee quien ve el lead; inserta staff solo tipos manuales (`nota|llamada|whatsapp|correo|visita`) en leads que puede ver.
   - `tasks`: asesor las suyas; manager todas.
-- [ ] Realtime: `alter publication supabase_realtime add table public.leads` (dentro de un `do $$` que no falle si ya está).
+- [x] Realtime: `alter publication supabase_realtime add table public.leads` (dentro de un `do $$` que no falle si ya está).
+- [x] **Cambios respecto a lo planeado:** `lead_events.seq` (identidad) desempata eventos con la misma marca de tiempo; el historial se ordena por `created_at, seq`. `lead_events.created_at` usa `clock_timestamp()`. Las llamadas/WhatsApp **entrantes** y las notas no cuentan como primer contacto; una **visita** sí.
+- Estado: **hecha y probada** (29 pruebas en `004_crm_core.test.mjs`). Pendiente: ejecutarla en el Supabase real.
 
 ### `supabase/005_crm_functions.sql` — lógica de negocio
-- [ ] Todas con `set search_path = public`. Las internas: `revoke execute … from public, anon, authenticated` (en Postgres las funciones son ejecutables por todos por defecto).
-- [ ] `pick_advisor()` *(interna)* — aplica D5; usa `pg_advisory_xact_lock` para que dos leads simultáneos no se asignen igual; actualiza `last_assigned_at`.
-- [ ] `ingest_lead(...)` *(interna)* — normaliza, busca/crea contacto, aplica D6, crea lead, asigna, devuelve `{lead_id, status: 'created'|'existing'}`.
-- [ ] **`submit_lead(p_name, p_email, p_phone, p_interest, p_message, p_property_id, p_utm, p_website)`** — `grant execute … to anon`. Valida longitudes y formato; si `p_website` (honeypot) trae algo, responde éxito sin guardar; fuente `web`.
-- [ ] **`create_lead(...)`** — solo staff; fuente `manual`; asesor = quien lo crea (o el elegido, si es manager). Si el cliente ya lo atiende otro asesor, devuelve error claro con su nombre.
-- [ ] **`crm_metrics(p_from, p_to)`** — *security invoker* (RLS limita lo que cada rol ve). Una fila por asesor (+ fila "sin asignar") con: recibidos, contactados, tiempo medio de respuesta (`first_contact_at − assigned_at`), llamadas, seguimientos (llamada/whatsapp/correo/visita **salientes**), visitas, negociaciones (leads que pasaron a `negociacion` en el periodo), ganados, perdidos.
-- [ ] **`crm_funnel()`** — leads actuales por etapa (también *security invoker*).
+- [x] Todas con `set search_path = public`. Las internas: `revoke execute … from public, anon, authenticated` (en Postgres las funciones son ejecutables por todos por defecto).
+- [x] `pick_advisor()` *(interna)* — aplica D5; usa `pg_advisory_xact_lock` para que dos leads simultáneos no se asignen igual; actualiza `last_assigned_at`.
+- [x] `ingest_lead(...)` *(interna)* — normaliza, busca/crea contacto, aplica D6, crea lead, asigna, devuelve `{lead_id, status: 'created'|'existing'}`.
+- [x] **`submit_lead(p_name, p_email, p_phone, p_interest, p_message, p_property_id, p_utm, p_website)`** — `grant execute … to anon`. Valida longitudes y formato; si `p_website` (honeypot) trae algo, responde éxito sin guardar; fuente `web`.
+- [x] **`create_lead(...)`** — solo staff; fuente `manual`; asesor = quien lo crea (o el elegido, si es manager). Si el cliente ya lo atiende otro asesor, devuelve error claro con su nombre.
+- [x] **`crm_metrics(p_from, p_to)`** — *security invoker* (RLS limita lo que cada rol ve). Una fila por asesor (+ fila "sin asignar") con: recibidos, contactados, tiempo medio de respuesta (`first_contact_at − assigned_at`), llamadas, seguimientos (llamada/whatsapp/correo/visita **salientes**), visitas, negociaciones (leads que pasaron a `negociacion` en el periodo), ganados, perdidos.
+- [x] **`crm_funnel()`** — leads actuales por etapa (también *security invoker*).
+- [x] **Cambios respecto a lo planeado:**
+  - `normalize_phone()` (nueva): el **servidor** normaliza teléfonos con la misma regla que `normalizeWhatsapp()` de la app (Ecuador por defecto). Sin esto, `0987654321` y `+593 98 765 4321` creaban dos contactos.
+  - D6 afinada: mismo contacto **y mismo interés** con lead abierto → nota; **otro interés** → lead nuevo, pero **con el mismo asesor** que ya lo atiende.
+  - Freno anti-repetición: máximo 3 notas entrantes por lead en 10 minutos (las demás se ignoran). Un formulario público sigue siendo abusable con contactos falsos distintos; el captcha queda como endurecimiento futuro.
+  - El reparto es por **menor carga**, así que un asesor nuevo (o que vuelve de vacaciones) recibe leads seguidos hasta igualar al resto.
+  - `crm_metrics`: *recibidos, contactados y tiempo de respuesta* cuentan leads que **llegaron** en el periodo; *llamadas, seguimientos, visitas, negociaciones, ganados y perdidos* cuentan lo que **ocurrió** en el periodo. *Seguimientos* = contactos salientes posteriores al primer contacto. La conversión de la interfaz (ganados ÷ recibidos del periodo) es una aproximación.
+- Estado: **hecha y probada** (33 pruebas en `005_crm_functions.test.mjs`; 78 en total con `npm run test:db`). Pendiente: ejecutarla en el Supabase real.
 
 ## 3. Frontend — cambios sobre el código existente
 | Archivo | Cambio |
@@ -114,12 +125,12 @@ Cada paso termina con `npm run build` en verde y, si toca la base de datos, su v
 
 | # | Paso | Tam. | Punto de control |
 |---|---|:-:|---|
-| 0 | `git init`, `.env` en `.gitignore`, primer commit | S | Hay historial para volver atrás |
-| 1 | Migración **003** + vista **Equipo** (`TeamList`) | M | Los admins de hoy siguen entrando y editando propiedades |
+| 0 ✅ | `git init`, `.env` en `.gitignore`, primer commit | S | Hay historial para volver atrás |
+| 1 ✅ | Migración **003** + vista **Equipo** (`TeamList`) | M | Los admins de hoy siguen entrando y editando propiedades |
 | 2 | `auth.ts` con `staff`/roles, `signIn` con `my_staff`, guard por rol | M | Un asesor de prueba entra; un usuario sin fila en Equipo es rechazado |
 | 3 | Reordenar rutas (`/admin/propiedades`), menú lateral por rol, arreglar enlaces de `PropertyForm`/`PropertyList` | S | Navegación completa y lectura sola para asesor |
-| 4 | Migración **004** (tablas, triggers, RLS) | L | Pruebas SQL de RLS y triggers |
-| 5 | Migración **005** (funciones) | L | Pruebas SQL de asignación, duplicados y métricas |
+| 4 ✅ | Migración **004** (tablas, triggers, RLS) | L | Pruebas SQL de RLS y triggers |
+| 5 ✅ | Migración **005** (funciones) | L | Pruebas SQL de asignación, duplicados y métricas |
 | 6 | `ContactForm` → `submit_lead` + honeypot + UTM + propiedad precargada | M | Una consulta real aparece en `leads`, asignada |
 | 7 | `leads.ts` + **Lista** de leads + **ficha** con línea de tiempo y compositor + `LeadForm` manual | L | Mover etapa, anotar, reasignar; todo queda en el historial |
 | 8 | **Kanban** con drag nativo y diálogo de motivo de pérdida | M | Mover de columna = mover de etapa |
@@ -131,8 +142,8 @@ Cada paso termina con `npm run build` en verde y, si toca la base de datos, su v
 
 ## 7. Verificación
 **Base de datos** (la parte donde un error es más caro):
-- [ ] **Arnés local** (recomendado): un Postgres en Docker con *stubs* de `auth` (`users`, `uid()`, `jwt()`), roles `anon`/`authenticated` y `storage`, donde se corren `schema.sql` + `002` + `003`–`005` en orden. Requiere abrir **Docker Desktop** (hoy el daemon está apagado; `psql` ya está instalado).
-- [ ] `supabase/tests/fase1_smoke.sql`: crea 1 admin y 2 asesores, ejecuta `submit_lead` como `anon` varias veces y comprueba reparto, duplicado → nota, honeypot ignorado, **aislamiento** (A no ve leads de B; manager ve todo), perdido sin motivo → error, eventos y `first_contact_at`, y `crm_metrics`. Termina con `rollback`.
+- [x] **Arnés local con PGlite** (Postgres en WebAssembly, sin Docker): `supabase/tests/00_harness.sql` simula roles, `auth` y `storage` de Supabase; `helpers.mjs` aplica `schema.sql` + migraciones y ejecuta consultas como `anon`/`authenticated` con un usuario dado. Se corre con **`npm run test:db`**. Cada migración nueva trae su `NNN_*.test.mjs`; se comprobó que las pruebas fallan si se rompe la migración a propósito.
+- [x] Pruebas de 004 y 005 (`004_*.test.mjs`, `005_*.test.mjs`): crea 1 admin y 2 asesores, ejecuta `submit_lead` como `anon` varias veces y comprueba reparto, duplicado → nota, honeypot ignorado, **aislamiento** (A no ve leads de B; manager ve todo), perdido sin motivo → error, eventos y `first_contact_at`, y `crm_metrics`. Termina con `rollback`.
 - [ ] Antes de ejecutar en el Supabase real: exportar `properties` y `advisors` (no hay copias automáticas en el plan gratuito).
 
 **Interfaz:**

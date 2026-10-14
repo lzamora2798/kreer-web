@@ -13,7 +13,7 @@ El proyecto va por fases. El código menciona la **Fase 2** (portal con filtros 
 | `/admin` | `PropertyList` (dentro de `AdminLayout`) | sesión + admin |
 | `/admin/propiedades/nueva` | `PropertyForm` | sesión + admin |
 | `/admin/propiedades/:id` | `PropertyForm` (editar) | sesión + admin |
-| `/admin/asesores` | `AdvisorList` | sesión + admin |
+| `/admin/equipo` (antes `/admin/asesores`, que redirige) | `TeamList` | sesión + admin |
 | cualquier otra | redirige a `/` | — |
 
 El guard (`router.ts`) solo verifica que haya sesión. El rol de admin se comprueba al iniciar sesión (`signIn` → RPC `is_admin`) y, lo que realmente protege los datos, en las políticas RLS de Supabase.

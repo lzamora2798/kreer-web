@@ -15,8 +15,8 @@ const nav = [
     icon: 'M4 11l8-7 8 7v9H4zM10 20v-6h4v6',
   },
   {
-    label: 'Asesores', to: '/admin/asesores',
-    match: (p: string) => p.startsWith('/admin/asesores'),
+    label: 'Equipo', to: '/admin/equipo',
+    match: (p: string) => p.startsWith('/admin/equipo'),
     icon: 'M10 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM4 19v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1M17 11a3 3 0 0 0 0-6M20 19v-1a4 4 0 0 0-3-3.9',
   },
 ]

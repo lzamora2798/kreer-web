@@ -13,6 +13,8 @@ const original = ref<string[]>([])
 const newFiles = ref<{ file: File; url: string }[]>([])
 const removed = ref<string[]>([])
 const advisors = ref<Advisor[]>([])
+// Solo asesores activos con WhatsApp (es lo que usa el botón del sitio); se conserva el actual aunque ya no cumpla.
+const selectableAdvisors = computed(() => advisors.value.filter((a) => (a.active && a.whatsapp) || a.id === form.value.advisor_id))
 const loading = ref(!!props.id)
 const busy = ref(false)
 const error = ref('')
@@ -99,11 +101,11 @@ async function submit() {
       <label class="grid gap-1 text-sm">Asesor de contacto
         <select v-model="form.advisor_id" class="field">
           <option :value="null">Sin asesor</option>
-          <option v-for="a in advisors" :key="a.id" :value="a.id">{{ a.name }}</option>
+          <option v-for="a in selectableAdvisors" :key="a.id" :value="a.id">{{ a.name }}{{ a.active ? '' : ' (inactivo)' }}</option>
         </select>
         <span class="text-xs text-ink-soft">
           El botón de WhatsApp del sitio usará el número de este asesor.
-          <router-link v-if="!advisors.length" to="/admin/asesores" class="text-brand-600">Crea el primer asesor.</router-link>
+          <router-link v-if="!selectableAdvisors.length" to="/admin/equipo" class="text-brand-600">Agrega un asesor con WhatsApp.</router-link>
         </span>
       </label>
       <label class="grid gap-1 text-sm">Descripción

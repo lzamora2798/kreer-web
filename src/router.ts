@@ -12,7 +12,8 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         { path: '', component: () => import('./views/admin/PropertyList.vue') },
-        { path: 'asesores', component: () => import('./views/admin/AdvisorList.vue') },
+        { path: 'equipo', component: () => import('./views/admin/TeamList.vue') },
+        { path: 'asesores', redirect: '/admin/equipo' },
         { path: 'propiedades/nueva', component: () => import('./views/admin/PropertyForm.vue') },
         { path: 'propiedades/:id', component: () => import('./views/admin/PropertyForm.vue'), props: true },
       ],
