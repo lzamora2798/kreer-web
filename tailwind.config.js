@@ -34,7 +34,8 @@ export default {
         sand: '#EDEBE4',
         line: '#E4E2DA',
         night: '#17272C',
-        ink: { DEFAULT: '#1C2A2E', body: '#3D4F54', soft: '#5A6E73' },
+        // ink.soft ajustado de #5A6E73 a #586C71: el original daba 4,499:1 sobre sand (AA pide 4,5).
+        ink: { DEFAULT: '#1C2A2E', body: '#3D4F54', soft: '#586C71' },
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', 'Garamond', '"Times New Roman"', 'serif'],

@@ -132,7 +132,7 @@ async function submit() {
             <button type="button" class="absolute bottom-1 right-1 bg-night/80 px-1.5 py-0.5 text-[10px] text-paper" @click="removeNew(i)">Quitar</button>
           </div>
         </div>
-        <label class="btn btn-ghost mt-4 w-full cursor-pointer !border-line !text-brand-600 hover:!bg-sand">
+        <label class="btn btn-ghost mt-4 w-full cursor-pointer !border-line !text-brand-600 hover:!bg-sand hover:!text-brand-700">
           Agregar fotos
           <input type="file" accept="image/*" multiple class="hidden" @change="pick" />
         </label>
