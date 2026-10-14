@@ -12,7 +12,7 @@ function search() {
   <section class="relative bg-night pb-24 pt-36 text-paper">
     <div class="absolute inset-0 bg-gradient-to-br from-brand-700 from-0% to-night to-70% opacity-40" aria-hidden="true" />
     <div class="relative mx-auto max-w-6xl px-5">
-      <p class="eyebrow !text-brand-300">Grupo inmobiliario</p>
+      <p class="eyebrow !text-greige">Grupo inmobiliario</p>
       <h1 class="mt-4 max-w-2xl text-5xl leading-[1.05] !text-paper md:text-7xl">Encuentra el lugar donde quieres crecer.</h1>
       <p class="mt-6 max-w-xl text-lg text-greige">Acompañamos cada operación —compra, venta, alquiler e inversión— con asesores que dan seguimiento hasta el cierre.</p>
 

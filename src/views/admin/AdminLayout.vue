@@ -32,7 +32,7 @@ async function out() {
 <template>
   <div class="min-h-screen bg-paper lg:flex">
     <header class="sticky top-0 z-30 flex h-14 items-center justify-between bg-night px-5 text-paper lg:hidden">
-      <router-link to="/admin" class="font-display text-xl tracking-[0.25em] text-greige">KREER <span class="ml-1 font-sans text-[10px] tracking-widest text-brand-400">ADMIN</span></router-link>
+      <router-link to="/admin" class="font-display text-xl tracking-[0.25em] text-greige">KREER <span class="ml-1 font-sans text-[10px] tracking-widest text-greige/80">ADMIN</span></router-link>
       <button aria-label="Abrir menú" @click="open = true">
         <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
@@ -45,14 +45,14 @@ async function out() {
       :class="open ? 'translate-x-0' : '-translate-x-full'"
     >
       <div class="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-6">
-        <router-link to="/admin" class="font-display text-2xl tracking-[0.25em] text-greige">KREER <span class="ml-1 font-sans text-xs tracking-widest text-brand-400">ADMIN</span></router-link>
+        <router-link to="/admin" class="font-display text-2xl tracking-[0.25em] text-greige">KREER <span class="ml-1 font-sans text-xs tracking-widest text-greige/80">ADMIN</span></router-link>
         <button class="lg:hidden" aria-label="Cerrar menú" @click="open = false">
           <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>
       </div>
 
       <nav class="flex-1 overflow-y-auto px-3 py-6" aria-label="Panel de administración">
-        <p class="px-3 pb-2 text-[10px] font-medium uppercase tracking-[0.2em] text-brand-400">Gestión</p>
+        <p class="px-3 pb-2 text-[10px] font-medium uppercase tracking-[0.2em] text-greige/80">Gestión</p>
         <router-link
           v-for="item in nav" :key="item.to" :to="item.to"
           class="mb-1 flex items-center gap-3 border-l-2 px-3 py-2.5 text-sm transition-colors"
@@ -73,7 +73,7 @@ async function out() {
           <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3M10 16l-4-4 4-4M6 12h10" /></svg>
           Salir
         </button>
-        <p class="mt-2 truncate px-3 text-xs text-brand-400" :title="user?.email">{{ user?.email }}</p>
+        <p class="mt-2 truncate px-3 text-xs text-greige/80" :title="user?.email">{{ user?.email }}</p>
       </div>
     </aside>
 
