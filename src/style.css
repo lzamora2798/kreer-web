@@ -12,5 +12,5 @@
   .btn-primary { @apply bg-brand-600 text-white hover:bg-brand-700; }
   .btn-ghost { @apply border border-greige text-paper hover:bg-white/10; }
   .field { @apply h-12 w-full border border-line bg-white px-4 text-sm text-ink outline-none focus:border-brand-600; }
-  .eyebrow { @apply text-xs font-medium uppercase tracking-[0.2em] text-brand-600; }
+  .eyebrow { @apply text-xs font-medium uppercase tracking-[0.2em] text-brand-slate; }
 }
