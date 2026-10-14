@@ -10,7 +10,7 @@ function search() {
 
 <template>
   <section class="relative bg-night pb-24 pt-36 text-paper">
-    <div class="absolute inset-0 opacity-40" style="background: linear-gradient(135deg, #3F626C 0%, #17272C 70%)" aria-hidden="true" />
+    <div class="absolute inset-0 bg-gradient-to-br from-brand-700 from-0% to-night to-70% opacity-40" aria-hidden="true" />
     <div class="relative mx-auto max-w-6xl px-5">
       <p class="eyebrow !text-brand-300">Grupo inmobiliario</p>
       <h1 class="mt-4 max-w-2xl text-5xl leading-[1.05] !text-paper md:text-7xl">Encuentra el lugar donde quieres crecer.</h1>

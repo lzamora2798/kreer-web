@@ -140,7 +140,7 @@ async function submit() {
 
       <div class="border border-line bg-white p-6">
         <label class="flex items-center gap-3 text-sm">
-          <input v-model="form.published" type="checkbox" class="h-4 w-4 accent-[#537C88]" />
+          <input v-model="form.published" type="checkbox" class="h-4 w-4 accent-brand-600" />
           Publicar en el sitio
         </label>
         <button class="btn btn-primary mt-5 w-full" :disabled="busy">{{ busy ? 'Guardando…' : 'Guardar propiedad' }}</button>

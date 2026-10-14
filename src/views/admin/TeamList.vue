@@ -74,7 +74,7 @@ async function del(a: Advisor) {
         </div>
         <p v-if="form.role === 'asesor'" class="-mt-2 text-xs text-ink-soft">A mayor peso, más leads nuevos recibe.</p>
         <label class="flex items-center gap-3 text-sm">
-          <input v-model="form.active" type="checkbox" class="h-4 w-4 accent-[#537C88]" />
+          <input v-model="form.active" type="checkbox" class="h-4 w-4 accent-brand-600" />
           Activo
         </label>
         <div class="flex gap-3">
