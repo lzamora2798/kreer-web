@@ -16,6 +16,11 @@ const sections: { label: string; items: NavItem[] }[] = [
     label: 'CRM',
     items: [
       {
+        label: 'Resumen', to: '/admin',
+        match: (p) => p === '/admin',
+        icon: 'M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7',
+      },
+      {
         label: 'Leads', to: '/admin/leads',
         match: (p) => p.startsWith('/admin/leads'),
         icon: 'M4 5h16l-6 8v5l-4 2v-7L4 5Z',

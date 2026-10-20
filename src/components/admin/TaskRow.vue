@@ -12,6 +12,8 @@ const props = defineProps<{
   showLead?: boolean
   /** Muestra quién debe hacerla (útil para la dirección). */
   showAdvisor?: boolean
+  /** Oculta "Eliminar" (en el Resumen solo se completan). */
+  noRemove?: boolean
 }>()
 const emit = defineEmits<{ toggle: [task: Task]; remove: [task: Task] }>()
 
@@ -37,6 +39,6 @@ const overdue = computed(() => !props.task.done_at && new Date(props.task.due_at
         <template v-if="showAdvisor && task.advisor"> · {{ task.advisor.name }}</template>
       </p>
     </div>
-    <button type="button" class="shrink-0 text-xs text-ink-soft hover:text-red-700" @click="emit('remove', task)">Eliminar</button>
+    <button v-if="!noRemove" type="button" class="shrink-0 text-xs text-ink-soft hover:text-red-700" @click="emit('remove', task)">Eliminar</button>
   </li>
 </template>

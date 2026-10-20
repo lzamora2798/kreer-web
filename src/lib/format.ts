@@ -62,6 +62,15 @@ export function formatDue(iso: string, now: Date | number = Date.now()): string 
   return `${dayMonth.format(d)} · ${t}`
 }
 
+const numberFmt = new Intl.NumberFormat('es-EC')
+
+export const formatNumber = (n: number) => numberFmt.format(n)
+
+/** "62 %", o "—" si no hay con qué comparar. */
+export function formatPercent(part: number, total: number): string {
+  return total > 0 ? `${Math.round((part / total) * 100)} %` : '—'
+}
+
 /** Duración corta: "45 min", "3 h", "2 d". */
 export function formatDuration(minutes: number): string {
   if (minutes < 60) return `${minutes} min`

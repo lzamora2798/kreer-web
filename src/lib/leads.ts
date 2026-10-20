@@ -112,6 +112,14 @@ export async function listLeads(): Promise<Lead[]> {
   return [...(open.data as unknown as Lead[]), ...(closed.data as unknown as Lead[])]
 }
 
+/** Leads nuevos que nadie ha contactado, del más antiguo al más reciente, con el total aunque solo se traigan `limit`. */
+export async function listUncontacted(limit: number): Promise<{ items: Lead[]; total: number }> {
+  const { data, error, count } = await db().from('leads').select(LEAD_SELECT, { count: 'exact' })
+    .eq('stage', 'nuevo').is('first_contact_at', null).order('created_at').limit(limit)
+  if (error) throw error
+  return { items: data as unknown as Lead[], total: count ?? 0 }
+}
+
 export async function getLead(id: string): Promise<Lead | null> {
   const { data, error } = await db().from('leads').select(LEAD_SELECT).eq('id', id).maybeSingle()
   if (error) throw error

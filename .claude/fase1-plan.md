@@ -136,7 +136,7 @@ Cada paso termina con `npm run build` en verde y, si toca la base de datos, su v
 | 8 | **Kanban** con drag nativo y diálogo de motivo de pérdida | M | Mover de columna = mover de etapa |
 | 9 ✅ | **Tareas** y **Agenda** (+ tareas dentro de la ficha) | M | Una tarea vencida se ve en Agenda y en Resumen *(código listo y compilando; falta probarlo contra el Supabase real. Sin migración nueva: usa `tasks` de la 004. Extra: la lista de leads marca "Tarea vencida". Quedó fuera: verla en el Resumen → paso 11)* |
 | 10 | **Clientes** (lista y ficha) | S | — |
-| 11 | **Resumen** del asesor y **dashboard gerencial** | L | Las cifras coinciden con un conteo manual |
+| 11 ✅ | **Resumen** del asesor y **dashboard gerencial** | L | Las cifras coinciden con un conteo manual *(código listo y compilando; revisado visualmente con datos simulados en escritorio y 390 px. Falta probarlo contra el Supabase real y el conteo manual. Sin migración nueva. Cambios respecto a lo planeado: «sin asignar» es un aviso con el total actual de leads abiertos sin asesor, no una ficha del periodo; el embudo muestra solo etapas abiertas; «conversión» va como nota de Ganados)* |
 | 12 | **Avisos en vivo** (Realtime): toast, contador en el menú, título de pestaña | S | Un lead nuevo aparece sin recargar |
 | 13 | Pulido: estados vacíos, errores, móvil, actualizar `.claude/*` y esta lista | S | Recorrido final por rol |
 

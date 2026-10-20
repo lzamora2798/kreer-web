@@ -10,7 +10,7 @@ El proyecto va por fases. El código menciona la **Fase 2** (portal con filtros 
 |---|---|---|
 | `/` | `HomeView` | público |
 | `/admin/login` | `LoginView` | público |
-| `/admin` | redirige a `/admin/leads` (el Resumen la tomará en el paso 11 de la Fase 1) | sesión + equipo |
+| `/admin` | `DashboardView` — Resumen. «Para atender ahora» (leads sin contactar, tareas vencidas y de hoy, leads abiertos por etapa) y «Rendimiento» por periodo (7/30/90 días o mes): 8 cifras, tabla por asesor (solo dirección) y leads por fuente. Lee las RPC `crm_metrics` y `crm_funnel`; un asesor solo ve lo suyo | sesión + equipo |
 | `/admin/leads` | `LeadBoard` — lista con filtros (hoy solo lista; el Kanban es el paso 8). Cada rol ve lo que la RLS le deja: el asesor solo sus leads | cualquier rol |
 | `/admin/leads/nuevo` | `LeadForm` — alta manual (RPC `create_lead`) | cualquier rol |
 | `/admin/leads/:id` | `LeadDetail` — ficha: contacto editable, etapa, asesor (solo dirección), tareas del lead, compositor y línea de tiempo | cualquier rol |

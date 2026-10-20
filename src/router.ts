@@ -20,8 +20,7 @@ const router = createRouter({
       component: () => import('./views/admin/AdminLayout.vue'),
       meta: { requiresAuth: true },
       children: [
-        // El Resumen (paso 11 de la Fase 1) tomará esta ruta; mientras tanto, los leads.
-        { path: '', redirect: '/admin/leads' },
+        { path: '', component: () => import('./views/admin/DashboardView.vue') },
         { path: 'leads', component: () => import('./views/admin/LeadBoard.vue') },
         { path: 'leads/nuevo', component: () => import('./views/admin/LeadForm.vue') },
         { path: 'leads/:id', component: () => import('./views/admin/LeadDetail.vue'), props: true },

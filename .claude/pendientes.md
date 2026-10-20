@@ -8,12 +8,12 @@ Estado: POC funcional. El alcance completo (CRM, paneles por rol, portal con SEO
 - [x] `src/lib/leads.ts` y `ContactForm` → `submit_lead` (sin `VITE_API_URL`), con honeypot, UTM y propiedad precargada desde "Solicitar información".
 - [x] Admin → **Leads** (paso 7 de [fase1-plan.md](fase1-plan.md)): lista con filtros, ficha con historial y alta manual; ítem "Leads" en el menú. Falta probarlo contra el Supabase real.
 - [x] **Tareas y Agenda** (paso 9): `/admin/agenda` + tareas dentro de la ficha del lead + "Tarea vencida" en la lista. Sin migración nueva. Falta probarlo contra el Supabase real.
-- [ ] Contador de leads nuevos en el menú con avisos en vivo (paso 12) y tareas vencidas en el Resumen (paso 11).
+- [x] **Resumen** (paso 11): `/admin` con lo que requiere atención ahora y el rendimiento por periodo (asesor y gerencia). Sin migración nueva. Falta probarlo contra el Supabase real y cotejar las cifras con un conteo manual.
+- [ ] Contador de leads nuevos en el menú con avisos en vivo (paso 12).
 - [ ] Kanban (paso 8): opcional, solo otra vista de los mismos leads; se pospuso.
 - [ ] Captcha (p. ej. Cloudflare Turnstile) si el honeypot no alcanza.
 
 ## 2. Admin
-- [ ] **Resumen** (`/admin`): hoy la raíz es el listado de propiedades. Un dashboard con totales (publicadas, borradores, asesores, consultas nuevas) y accesos rápidos.
 - [ ] Búsqueda y filtros en `PropertyList` (estado, operación, tipo, asesor).
 - [ ] Mostrar el asesor asignado en el listado de propiedades.
 - [ ] Gestión de usuarios admin desde la interfaz (hoy se autoriza por SQL).

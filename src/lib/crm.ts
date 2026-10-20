@@ -88,6 +88,15 @@ export const TASK_DEFAULT_HOUR = 9
 /** La Agenda separa "Próximos 7 días"; lo que pasa de ahí va en "Más adelante". */
 export const AGENDA_UPCOMING_DAYS = 7
 
+/** Periodos del Resumen: los últimos N días (contando hoy) o lo que va del mes. */
+export const PERIODS = [
+  { value: '7', label: '7 días' },
+  { value: '30', label: '30 días' },
+  { value: '90', label: '90 días' },
+  { value: 'mes', label: 'Este mes' },
+] as const
+export type Period = (typeof PERIODS)[number]['value']
+
 /** Semáforo de un lead `nuevo` que nadie ha contactado: minutos desde que llegó. */
 export const UNCONTACTED_WARN_MIN = 30
 export const UNCONTACTED_LATE_MIN = 120
