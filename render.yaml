@@ -1,0 +1,19 @@
+# Blueprint de Render: sitio estático (SPA de Vite). Supabase corre aparte.
+# La versión de Node sale de .node-version.
+services:
+  - type: web
+    name: kreer-web
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    # SPA: toda ruta sirve index.html (equivale al rewrite de vercel.json)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Se incrustan al hacer el build; Render pide los valores al crear el Blueprint
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
