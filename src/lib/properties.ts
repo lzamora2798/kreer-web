@@ -1,4 +1,4 @@
-import { BUCKET, supabase } from './supabase'
+import { BUCKET, db } from './supabase'
 
 export const OPERATIONS = ['Venta', 'Alquiler'] as const
 export const TYPES = ['Casa', 'Departamento', 'Suite', 'Terreno', 'Local comercial', 'Oficina'] as const
@@ -20,11 +20,6 @@ export interface Property {
   advisor_id: string | null
   contact_whatsapp?: string | null
   created_at?: string
-}
-
-function db() {
-  if (!supabase) throw new Error('Supabase no está configurado (faltan variables VITE_SUPABASE_*).')
-  return supabase
 }
 
 export function emptyProperty(): Property {

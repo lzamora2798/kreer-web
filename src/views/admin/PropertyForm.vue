@@ -57,7 +57,7 @@ async function submit() {
     form.value.images = [...form.value.images, ...uploaded]
     await saveProperty(form.value)
     if (removed.value.length) await deleteImages(removed.value)
-    router.replace('/admin')
+    router.replace('/admin/propiedades')
   } catch (e) {
     error.value = (e as Error).message
   } finally { busy.value = false }
@@ -65,7 +65,7 @@ async function submit() {
 </script>
 
 <template>
-  <router-link to="/admin" class="text-sm text-brand-600 hover:text-brand-700">← Volver a propiedades</router-link>
+  <router-link to="/admin/propiedades" class="text-sm text-brand-600 hover:text-brand-700">← Volver a propiedades</router-link>
   <h1 class="mt-3 text-4xl">{{ isNew ? 'Nueva propiedad' : 'Editar propiedad' }}</h1>
   <p v-if="loading" class="mt-8 text-sm text-ink-soft">Cargando…</p>
 

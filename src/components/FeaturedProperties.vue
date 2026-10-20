@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { contactProperty } from '../lib/contact'
 import { featured } from '../data/properties'
 import { formatPrice, listPublished } from '../lib/properties'
 import { supabase } from '../lib/supabase'
@@ -80,7 +81,7 @@ onMounted(async () => {
             <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8L4 20Z" /><path d="M9 9.5c.3 2.2 2.3 4.2 4.5 4.5l1.2-1.2-1.7-.9-.8.6c-.9-.4-1.6-1.1-2-2l.6-.8-.9-1.7L9 9.5Z" /></svg>
             Consultar por WhatsApp
           </a>
-          <a v-else href="#contacto" class="btn btn-ghost mt-5 w-full !border-line !text-brand-600 hover:!bg-sand hover:!text-brand-700">Solicitar información</a>
+          <a v-else href="#contacto" class="btn btn-ghost mt-5 w-full !border-line !text-brand-600 hover:!bg-sand hover:!text-brand-700" @click="contactProperty = { id: p.id, title: p.title }">Solicitar información</a>
         </div>
       </article>
     </div>

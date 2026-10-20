@@ -1,6 +1,6 @@
 # Supabase
 
-Variables en `.env` (nunca documentar sus valores): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_URL` (opcional; ver "Leads" en [pendientes.md](pendientes.md)).
+Variables en `.env` (nunca documentar sus valores): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`. (`VITE_API_URL` ya no se usa: las consultas del sitio van directo a Supabase con `submit_lead`.)
 
 ## Orden de puesta en marcha
 1. Supabase → SQL Editor: ejecutar en orden `supabase/schema.sql`, `002_asesores.sql`, `003_roles.sql`, `004_crm_core.sql` y `005_crm_functions.sql` (una sola vez cada uno; son idempotentes en lo posible y el editor revierte el script completo si algo falla).
@@ -32,7 +32,7 @@ Variables en `.env` (nunca documentar sus valores): `VITE_SUPABASE_URL`, `VITE_S
 - **`advisors`** — el equipo: `id, name, whatsapp (opcional; solo dígitos 8–15, con código de país), email (único), role, active, assign_weight, user_id, last_assigned_at, created_at`. Lectura: solo el equipo; escritura: solo admin. El nombre y correo **nunca** se exponen al público; por eso el WhatsApp se copia a `properties.contact_whatsapp`.
 
 ## Funciones y triggers
-- `is_admin()` — `security definer`, usada por todas las políticas y por `signIn`.
+- `is_admin()` — `security definer`, usada por todas las políticas. El login (`signIn`) y el guard del router usan `my_staff()`, que además devuelve el rol.
 - `touch_updated_at` → `properties_touch`.
 - `sync_property_contact` → `properties_sync_contact` (al insertar o cambiar `advisor_id`).
 - `propagate_advisor_contact` → `advisors_propagate` (si cambia el WhatsApp del asesor, actualiza todas sus propiedades).

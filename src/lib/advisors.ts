@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { db } from './supabase'
 
 export type Role = 'admin' | 'gerente' | 'asesor'
 
@@ -18,11 +18,6 @@ export interface Advisor {
   active: boolean
   assign_weight: number
   user_id: string | null
-}
-
-function db() {
-  if (!supabase) throw new Error('Supabase no está configurado (faltan variables VITE_SUPABASE_*).')
-  return supabase
 }
 
 export function emptyAdvisor(): Advisor {

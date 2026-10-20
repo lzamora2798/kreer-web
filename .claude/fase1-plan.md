@@ -127,12 +127,12 @@ Cada paso termina con `npm run build` en verde y, si toca la base de datos, su v
 |---|---|:-:|---|
 | 0 ✅ | `git init`, `.env` en `.gitignore`, primer commit | S | Hay historial para volver atrás |
 | 1 ✅ | Migración **003** + vista **Equipo** (`TeamList`) | M | Los admins de hoy siguen entrando y editando propiedades |
-| 2 | `auth.ts` con `staff`/roles, `signIn` con `my_staff`, guard por rol | M | Un asesor de prueba entra; un usuario sin fila en Equipo es rechazado |
-| 3 | Reordenar rutas (`/admin/propiedades`), menú lateral por rol, arreglar enlaces de `PropertyForm`/`PropertyList` | S | Navegación completa y lectura sola para asesor |
+| 2 ✅ | `auth.ts` con `staff`/roles, `signIn` con `my_staff`, guard por rol | M | Un asesor de prueba entra; un usuario sin fila en Equipo es rechazado *(código listo y compilando; falta probarlo contra el Supabase real)* |
+| 3 ✅ | Reordenar rutas (`/admin/propiedades`), menú lateral por rol, arreglar enlaces de `PropertyForm`/`PropertyList` | S | Navegación completa y lectura sola para asesor *(ídem; `TeamList` también queda de solo lectura para gerencia)* |
 | 4 ✅ | Migración **004** (tablas, triggers, RLS) | L | Pruebas SQL de RLS y triggers |
 | 5 ✅ | Migración **005** (funciones) | L | Pruebas SQL de asignación, duplicados y métricas |
-| 6 | `ContactForm` → `submit_lead` + honeypot + UTM + propiedad precargada | M | Una consulta real aparece en `leads`, asignada |
-| 7 | `leads.ts` + **Lista** de leads + **ficha** con línea de tiempo y compositor + `LeadForm` manual | L | Mover etapa, anotar, reasignar; todo queda en el historial |
+| 6 ✅ | `ContactForm` → `submit_lead` + honeypot + UTM + propiedad precargada | M | Una consulta real aparece en `leads`, asignada *(código listo y compilando; falta probarlo contra el Supabase real)* |
+| 7 ✅ | `leads.ts` + **Lista** de leads + **ficha** con línea de tiempo y compositor + `LeadForm` manual | L | Mover etapa, anotar, reasignar; todo queda en el historial *(código listo y compilando; falta probarlo contra el Supabase real. Quedó fuera: contador de nuevos en el menú → paso 12; tareas dentro de la ficha → paso 9)* |
 | 8 | **Kanban** con drag nativo y diálogo de motivo de pérdida | M | Mover de columna = mover de etapa |
 | 9 | **Tareas** y **Agenda** (+ tareas dentro de la ficha) | M | Una tarea vencida se ve en Agenda y en Resumen |
 | 10 | **Clientes** (lista y ficha) | S | — |

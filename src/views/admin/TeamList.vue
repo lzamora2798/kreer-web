@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { isAdmin } from '../../lib/auth'
 import { ROLES, emptyAdvisor, isValidWhatsapp, listAdvisors, normalizeWhatsapp, removeAdvisor, saveAdvisor, setAdvisorActive, type Advisor } from '../../lib/advisors'
 
 const items = ref<Advisor[]>([])
@@ -57,8 +58,10 @@ async function del(a: Advisor) {
   <h1 class="mt-2 text-4xl">Equipo</h1>
   <p class="mt-2 max-w-xl text-sm text-ink-soft">Personas con acceso al panel. Los asesores reciben leads y se asignan a propiedades; en el sitio público solo se muestra su botón de WhatsApp, el nombre y el correo son de uso interno.</p>
 
-  <div class="mt-8 grid gap-6 lg:grid-cols-[1fr_1.4fr]">
-    <div class="grid content-start gap-6">
+  <p v-if="!isAdmin" class="mt-2 max-w-xl text-sm text-ink-soft">Solo el administrador puede agregar o modificar personas del equipo.</p>
+
+  <div class="mt-8 grid gap-6" :class="{ 'lg:grid-cols-[1fr_1.4fr]': isAdmin }">
+    <div v-if="isAdmin" class="grid content-start gap-6">
       <form class="grid gap-4 border border-line bg-white p-6" @submit.prevent="submit">
         <p class="text-sm font-medium text-ink">{{ editing ? 'Editar persona' : 'Nueva persona' }}</p>
         <input v-model="form.name" class="field" placeholder="Nombre completo" required />
@@ -100,7 +103,7 @@ async function del(a: Advisor) {
       <div v-else class="overflow-x-auto border border-line bg-white">
         <table class="w-full min-w-[640px] text-left text-sm">
           <thead class="border-b border-line bg-sand text-xs uppercase tracking-widest text-ink-soft">
-            <tr><th class="p-3">Persona</th><th class="p-3">Rol</th><th class="p-3">Acceso</th><th class="p-3">Estado</th><th class="p-3 text-right">Acciones</th></tr>
+            <tr><th class="p-3">Persona</th><th class="p-3">Rol</th><th class="p-3">Acceso</th><th class="p-3">Estado</th><th v-if="isAdmin" class="p-3 text-right">Acciones</th></tr>
           </thead>
           <tbody>
             <tr v-for="a in items" :key="a.id" class="border-b border-line last:border-0" :class="{ 'opacity-60': !a.active }">
@@ -111,9 +114,10 @@ async function del(a: Advisor) {
               <td class="p-3">{{ roleLabel(a.role) }}<span v-if="a.role === 'asesor' && a.assign_weight > 1" class="text-xs text-ink-soft"> · peso {{ a.assign_weight }}</span></td>
               <td class="p-3"><span class="px-2 py-1 text-xs font-medium" :class="access(a).cls">{{ access(a).text }}</span></td>
               <td class="p-3">
-                <button class="px-3 py-1 text-xs font-medium" :class="a.active ? 'bg-brand-600 text-white' : 'bg-sand text-ink-soft'" @click="toggle(a)">{{ a.active ? 'Activo' : 'Inactivo' }}</button>
+                <button v-if="isAdmin" class="px-3 py-1 text-xs font-medium" :class="a.active ? 'bg-brand-600 text-white' : 'bg-sand text-ink-soft'" @click="toggle(a)">{{ a.active ? 'Activo' : 'Inactivo' }}</button>
+                <span v-else class="px-3 py-1 text-xs font-medium" :class="a.active ? 'bg-brand-600 text-white' : 'bg-sand text-ink-soft'">{{ a.active ? 'Activo' : 'Inactivo' }}</span>
               </td>
-              <td class="space-x-4 p-3 text-right">
+              <td v-if="isAdmin" class="space-x-4 p-3 text-right">
                 <button class="font-medium text-brand-600 hover:text-brand-700" @click="edit(a)">Editar</button>
                 <button class="text-red-700" @click="del(a)">Eliminar</button>
               </td>

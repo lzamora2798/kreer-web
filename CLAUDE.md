@@ -12,8 +12,8 @@ Vue 3 (`<script setup>` + TypeScript) · Vite · Tailwind 3 · vue-router 4 · S
 
 ## Dónde está cada cosa
 - `src/views/HomeView.vue` + `src/components/` — sitio público (una sola página con anclas `#propiedades`, `#vender`, `#contacto`…)
-- `src/views/admin/` — panel: `AdminLayout` (menú lateral), `LoginView`, `PropertyList`, `PropertyForm`, `TeamList` (equipo y roles)
-- `src/lib/` — acceso a datos: `supabase.ts` (cliente, `null` sin env), `auth.ts`, `properties.ts`, `advisors.ts`
+- `src/views/admin/` — panel: `AdminLayout` (menú lateral), `LoginView`, `LeadBoard` · `LeadDetail` · `LeadForm` (CRM), `PropertyList`, `PropertyForm`, `TeamList` (equipo y roles). Componentes del panel en `src/components/admin/`
+- `src/lib/` — acceso a datos: `supabase.ts` (cliente y `db()`; `null` sin env), `auth.ts` (sesión, rol), `properties.ts`, `advisors.ts`, `leads.ts`; `crm.ts` (etapas, fuentes y demás constantes), `format.ts` (fechas es-EC)
 - `src/router.ts` — rutas; `/admin/*` exige sesión (`meta.requiresAuth`)
 - `supabase/*.sql` — esquema y migraciones numeradas; se ejecutan a mano, en orden, en Supabase → SQL Editor. `supabase/tests/` — pruebas con PGlite
 
