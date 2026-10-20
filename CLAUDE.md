@@ -3,7 +3,7 @@
 Sitio público + panel de administración de **KREER Grupo Inmobiliario** (Ecuador, precios en USD). Hoy es un POC: la portada es estática y las propiedades/asesores se gestionan desde `/admin` con Supabase.
 
 ## Stack
-Vue 3 (`<script setup>` + TypeScript) · Vite · Tailwind 3 · vue-router 4 · Supabase (Auth + Postgres + Storage). Deploy en Vercel (SPA con rewrite a `index.html`).
+Vue 3 (`<script setup>` + TypeScript) · Vite · Tailwind 3 · vue-router 4 · Supabase (Auth + Postgres + Storage) · GSAP (animación del hero). Deploy en Vercel (SPA con rewrite a `index.html`).
 
 ## Comandos
 - `npm run dev` — servidor de desarrollo
