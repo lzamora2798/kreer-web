@@ -25,6 +25,7 @@ const router = createRouter({
         { path: 'leads', component: () => import('./views/admin/LeadBoard.vue') },
         { path: 'leads/nuevo', component: () => import('./views/admin/LeadForm.vue') },
         { path: 'leads/:id', component: () => import('./views/admin/LeadDetail.vue'), props: true },
+        { path: 'agenda', component: () => import('./views/admin/AgendaView.vue') },
         { path: 'propiedades', component: () => import('./views/admin/PropertyList.vue') },
         { path: 'propiedades/nueva', component: () => import('./views/admin/PropertyForm.vue'), meta: { roles: MANAGER_ROLES } },
         { path: 'propiedades/:id', component: () => import('./views/admin/PropertyForm.vue'), props: true, meta: { roles: MANAGER_ROLES } },

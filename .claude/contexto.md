@@ -13,7 +13,8 @@ El proyecto va por fases. El código menciona la **Fase 2** (portal con filtros 
 | `/admin` | redirige a `/admin/leads` (el Resumen la tomará en el paso 11 de la Fase 1) | sesión + equipo |
 | `/admin/leads` | `LeadBoard` — lista con filtros (hoy solo lista; el Kanban es el paso 8). Cada rol ve lo que la RLS le deja: el asesor solo sus leads | cualquier rol |
 | `/admin/leads/nuevo` | `LeadForm` — alta manual (RPC `create_lead`) | cualquier rol |
-| `/admin/leads/:id` | `LeadDetail` — ficha: contacto editable, etapa, asesor (solo dirección), compositor y línea de tiempo | cualquier rol |
+| `/admin/leads/:id` | `LeadDetail` — ficha: contacto editable, etapa, asesor (solo dirección), tareas del lead, compositor y línea de tiempo | cualquier rol |
+| `/admin/agenda` | `AgendaView` — tareas pendientes en Vencidas · Hoy · Mañana · Próximos 7 días · Más adelante; completar con un clic y crear (con lead opcional). El asesor ve las suyas; la dirección, las de todos y puede filtrar por responsable | cualquier rol |
 | `/admin/propiedades` | `PropertyList` (dentro de `AdminLayout`); el asesor la ve en solo lectura | cualquier rol |
 | `/admin/propiedades/nueva` | `PropertyForm` | admin, gerente |
 | `/admin/propiedades/:id` | `PropertyForm` (editar) | admin, gerente |

@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import LeadTimeline from '../../components/admin/LeadTimeline.vue'
 import LostReasonDialog from '../../components/admin/LostReasonDialog.vue'
 import StageBadge from '../../components/admin/StageBadge.vue'
+import TaskForm from '../../components/admin/TaskForm.vue'
+import TaskRow from '../../components/admin/TaskRow.vue'
 import { isValidWhatsapp, listAdvisors, normalizeWhatsapp, type Advisor } from '../../lib/advisors'
 import { isManager, staff } from '../../lib/auth'
 import { DIRECTIONAL_EVENTS, MANUAL_EVENTS, STAGES, interestLabel, isClosed, sourceLabel, type ManualEventKind, type Stage } from '../../lib/crm'
 import { formatDateTime } from '../../lib/format'
 import { addEvent, assignLead, getLead, leadError, listEvents, saveContact, setStage, type Lead, type LeadEvent } from '../../lib/leads'
+import { createTask, deleteTask, listLeadTasks, setTaskDone, type NewTask, type Task } from '../../lib/tasks'
 
 const props = defineProps<{ id: string }>()
 
@@ -34,11 +37,34 @@ const body = ref('')
 const noteBusy = ref(false)
 const noteError = ref('')
 
+// Tareas del lead. Se cargan aparte: si fallan, el resto de la ficha sigue funcionando.
+const DONE_PREVIEW = 3 // tareas hechas que se muestran antes de "Ver más"
+const tasks = ref<Task[]>([])
+const tasksError = ref('')
+const showTaskForm = ref(false)
+const showAllDone = ref(false)
+const taskBusy = ref(false)
+const taskFormError = ref('')
+const now = ref(Date.now()) // avanza solo para que "vencida" se actualice
+let timer: ReturnType<typeof setInterval> | undefined
+onMounted(() => { timer = setInterval(() => { now.value = Date.now() }, 60_000) })
+onUnmounted(() => clearInterval(timer))
+
 const directional = computed(() => DIRECTIONAL_EVENTS.includes(kind.value))
 const waLink = computed(() => (lead.value?.contact.phone ? `https://wa.me/${lead.value.contact.phone}` : ''))
 const utmText = computed(() => Object.entries(lead.value?.utm ?? {}).map(([k, v]) => `${k.replace('utm_', '')}: ${v}`).join(' · '))
 // Quien puede ser responsable: personas activas (la dirección también puede atender).
 const assignable = computed(() => advisors.value.filter((a) => a.active || a.id === lead.value?.advisor_id))
+
+// La tarea es de quien atiende el lead; si no tiene asesor, de quien la crea. Solo la dirección puede elegir otra persona.
+const taskAdvisorId = computed(() => lead.value?.advisor_id ?? staff.value?.id ?? '')
+const taskAdvisors = computed(() => (isManager.value ? assignable.value.map((a) => ({ id: a.id, name: a.name })) : undefined))
+const doneTasks = computed(() => tasks.value.filter((t) => t.done_at))
+const shownTasks = computed(() => [
+  ...tasks.value.filter((t) => !t.done_at),
+  ...(showAllDone.value ? doneTasks.value : doneTasks.value.slice(0, DONE_PREVIEW)),
+])
+const hiddenDone = computed(() => (showAllDone.value ? 0 : Math.max(0, doneTasks.value.length - DONE_PREVIEW)))
 
 function fillContact(l: Lead) {
   contact.value = { name: l.contact.name, phone: l.contact.phone ?? '', email: l.contact.email, notes: l.contact.notes }
@@ -54,7 +80,37 @@ async function load() {
     events.value = ev
     advisors.value = adv
     fillContact(l)
+    showTaskForm.value = false
+    showAllDone.value = false
+    void loadTasks()
   } catch (e) { error.value = leadError(e) } finally { loading.value = false }
+}
+
+async function loadTasks() {
+  tasksError.value = ''
+  try { tasks.value = await listLeadTasks(props.id) } catch (e) { tasksError.value = leadError(e) }
+}
+
+async function addTask(n: NewTask) {
+  if (!lead.value) return
+  taskBusy.value = true
+  taskFormError.value = ''
+  try {
+    await createTask({ ...n, leadId: lead.value.id })
+    showTaskForm.value = false
+    await loadTasks()
+  } catch (err) { taskFormError.value = leadError(err) } finally { taskBusy.value = false }
+}
+
+async function toggleTask(t: Task) {
+  tasksError.value = ''
+  try { await setTaskDone(t.id, !t.done_at); await loadTasks() } catch (err) { tasksError.value = leadError(err) }
+}
+
+async function removeTask(t: Task) {
+  if (!confirm(`¿Eliminar la tarea "${t.title}"?`)) return
+  tasksError.value = ''
+  try { await deleteTask(t.id); await loadTasks() } catch (err) { tasksError.value = leadError(err) }
 }
 onMounted(load)
 watch(() => props.id, load)
@@ -185,6 +241,29 @@ async function submitEvent() {
       </div>
 
       <div class="grid content-start gap-6">
+        <section class="border border-line bg-white p-6">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-sm font-medium text-ink">Tareas</p>
+            <button v-if="!showTaskForm" type="button" class="text-sm text-brand-600 hover:text-brand-700" @click="showTaskForm = true">+ Nueva tarea</button>
+          </div>
+          <div v-if="showTaskForm" class="mt-4 border-b border-line pb-5">
+            <TaskForm
+              :advisor-id="taskAdvisorId" :lead-id="lead.id" :advisors="taskAdvisors"
+              :busy="taskBusy" :error="taskFormError" @submit="addTask" @cancel="showTaskForm = false"
+            />
+          </div>
+          <p v-if="tasksError" class="mt-3 text-sm text-red-700" role="alert">{{ tasksError }}</p>
+          <ul v-if="shownTasks.length" class="mt-2">
+            <TaskRow v-for="t in shownTasks" :key="t.id" :task="t" :now="now" :show-advisor="isManager" @toggle="toggleTask" @remove="removeTask" />
+          </ul>
+          <p v-else-if="!tasksError && !showTaskForm" class="mt-3 text-sm text-ink-soft">
+            Sin tareas. Agenda el próximo paso (una llamada, una visita…) para no perder el seguimiento.
+          </p>
+          <button v-if="hiddenDone" type="button" class="mt-2 text-xs text-brand-600 hover:text-brand-700" @click="showAllDone = true">
+            Ver {{ hiddenDone }} {{ hiddenDone === 1 ? 'hecha más' : 'hechas más' }}
+          </button>
+        </section>
+
         <form class="grid gap-3 border border-line bg-white p-6" @submit.prevent="submitEvent">
           <p class="text-sm font-medium text-ink">Registrar actividad</p>
           <div class="flex flex-wrap gap-2" role="group" aria-label="Tipo de actividad">

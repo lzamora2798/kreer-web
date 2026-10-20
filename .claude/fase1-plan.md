@@ -134,7 +134,7 @@ Cada paso termina con `npm run build` en verde y, si toca la base de datos, su v
 | 6 ✅ | `ContactForm` → `submit_lead` + honeypot + UTM + propiedad precargada | M | Una consulta real aparece en `leads`, asignada *(código listo y compilando; falta probarlo contra el Supabase real)* |
 | 7 ✅ | `leads.ts` + **Lista** de leads + **ficha** con línea de tiempo y compositor + `LeadForm` manual | L | Mover etapa, anotar, reasignar; todo queda en el historial *(código listo y compilando; falta probarlo contra el Supabase real. Quedó fuera: contador de nuevos en el menú → paso 12; tareas dentro de la ficha → paso 9)* |
 | 8 | **Kanban** con drag nativo y diálogo de motivo de pérdida | M | Mover de columna = mover de etapa |
-| 9 | **Tareas** y **Agenda** (+ tareas dentro de la ficha) | M | Una tarea vencida se ve en Agenda y en Resumen |
+| 9 ✅ | **Tareas** y **Agenda** (+ tareas dentro de la ficha) | M | Una tarea vencida se ve en Agenda y en Resumen *(código listo y compilando; falta probarlo contra el Supabase real. Sin migración nueva: usa `tasks` de la 004. Extra: la lista de leads marca "Tarea vencida". Quedó fuera: verla en el Resumen → paso 11)* |
 | 10 | **Clientes** (lista y ficha) | S | — |
 | 11 | **Resumen** del asesor y **dashboard gerencial** | L | Las cifras coinciden con un conteo manual |
 | 12 | **Avisos en vivo** (Realtime): toast, contador en el menú, título de pestaña | S | Un lead nuevo aparece sin recargar |

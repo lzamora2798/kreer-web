@@ -6,8 +6,10 @@ import { isManager } from '../../lib/auth'
 import { INTERESTS, SOURCES, STAGES, UNCONTACTED_LATE_MIN, UNCONTACTED_WARN_MIN, interestLabel, isClosed, sourceLabel } from '../../lib/crm'
 import { formatDuration, minutesSince, timeAgo } from '../../lib/format'
 import { leadError, listLeads, type Lead } from '../../lib/leads'
+import { listLeadTaskDues } from '../../lib/tasks'
 
 const leads = ref<Lead[]>([])
+const taskDues = ref(new Map<string, string>()) // lead → fecha de su tarea pendiente más próxima
 const advisors = ref<Advisor[]>([])
 const loading = ref(true)
 const error = ref('')
@@ -26,14 +28,24 @@ let timer: ReturnType<typeof setInterval> | undefined
 onMounted(async () => {
   timer = setInterval(() => { now.value = Date.now() }, 60_000)
   try {
-    const [l, a] = await Promise.all([listLeads(), isManager.value ? listAdvisors() : Promise.resolve([])])
+    // Las tareas solo marcan los leads con seguimiento atrasado: si fallan, la lista sigue sirviendo sin ese aviso.
+    const [l, a, dues] = await Promise.all([
+      listLeads(), isManager.value ? listAdvisors() : Promise.resolve([]), listLeadTaskDues().catch(() => new Map<string, string>()),
+    ])
     leads.value = l
     advisors.value = a.filter((x) => x.active)
+    taskDues.value = dues
   } catch (e) { error.value = leadError(e) } finally { loading.value = false }
 })
 onUnmounted(() => clearInterval(timer))
 
 const isUncontacted = (l: Lead) => l.stage === 'nuevo' && !l.first_contact_at
+
+/** Tiene una tarea pendiente cuya fecha ya pasó (los leads cerrados no se marcan). */
+function hasOverdueTask(l: Lead): boolean {
+  const due = taskDues.value.get(l.id)
+  return !!due && !isClosed(l.stage) && new Date(due).getTime() < now.value
+}
 
 /** Semáforo de un lead nuevo sin contactar, contado desde que se asignó (o llegó). */
 function urgency(l: Lead): { level: 'warn' | 'late'; text: string } | null {
@@ -144,6 +156,7 @@ function clear() { q.value = ''; stage.value = 'abiertos'; advisor.value = ''; s
               <td class="p-3">
                 <StageBadge :stage="l.stage" />
                 <p v-if="urgency(l)" class="mt-1 text-xs font-medium" :class="urgency(l)!.level === 'late' ? 'text-red-700' : 'text-amber-700'">{{ urgency(l)!.text }}</p>
+                <p v-if="hasOverdueTask(l)" class="mt-1 text-xs font-medium text-red-700">Tarea vencida</p>
               </td>
               <td v-if="isManager" class="p-3" :class="{ 'text-red-700': !l.advisor }">{{ l.advisor?.name ?? 'Sin asignar' }}</td>
               <td class="whitespace-nowrap p-3 text-ink-soft" :title="l.created_at">{{ timeAgo(l.created_at, now) }}</td>

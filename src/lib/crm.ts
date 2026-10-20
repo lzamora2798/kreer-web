@@ -72,6 +72,22 @@ export const LOST_REASONS = [
   'Otro',
 ] as const
 
+/** Tipos de tarea; coinciden con `tasks.kind` (migración 004). */
+export const TASK_KINDS = [
+  { value: 'llamar', label: 'Llamar' },
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'correo', label: 'Correo' },
+  { value: 'visita', label: 'Visita' },
+  { value: 'otro', label: 'Otro' },
+] as const
+export type TaskKind = (typeof TASK_KINDS)[number]['value']
+export const taskKindLabel = (k: string) => TASK_KINDS.find((x) => x.value === k)?.label ?? k
+
+/** Hora (local) que ponen los atajos "Mañana", "En 3 días"… al crear una tarea. */
+export const TASK_DEFAULT_HOUR = 9
+/** La Agenda separa "Próximos 7 días"; lo que pasa de ahí va en "Más adelante". */
+export const AGENDA_UPCOMING_DAYS = 7
+
 /** Semáforo de un lead `nuevo` que nadie ha contactado: minutos desde que llegó. */
 export const UNCONTACTED_WARN_MIN = 30
 export const UNCONTACTED_LATE_MIN = 120

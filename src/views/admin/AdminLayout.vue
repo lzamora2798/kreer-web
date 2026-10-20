@@ -20,6 +20,11 @@ const sections: { label: string; items: NavItem[] }[] = [
         match: (p) => p.startsWith('/admin/leads'),
         icon: 'M4 5h16l-6 8v5l-4 2v-7L4 5Z',
       },
+      {
+        label: 'Agenda', to: '/admin/agenda',
+        match: (p) => p.startsWith('/admin/agenda'),
+        icon: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1ZM4 10h16M8 3v4M16 3v4',
+      },
     ],
   },
   {

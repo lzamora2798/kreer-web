@@ -21,6 +21,47 @@ export function timeAgo(iso: string, now = Date.now()): string {
   return formatDateTime(iso)
 }
 
+const timeOnly = new Intl.DateTimeFormat('es-EC', { hour: '2-digit', minute: '2-digit' })
+const dayMonth = new Intl.DateTimeFormat('es-EC', { weekday: 'short', day: 'numeric', month: 'short' })
+
+/** Medianoche (hora local) del día de `d`. */
+export function startOfDay(d: Date | number = new Date()): Date {
+  const x = new Date(d)
+  x.setHours(0, 0, 0, 0)
+  return x
+}
+
+/** `d` movido `n` días (en calendario local, no en múltiplos de 24 h). */
+export function addDays(d: Date | number, n: number): Date {
+  const x = new Date(d)
+  x.setDate(x.getDate() + n)
+  return x
+}
+
+/** El día de hoy + `offset` días, a las `hour` en punto (hora local). */
+export function dayAt(offset: number, hour: number, from: Date | number = new Date()): Date {
+  const x = addDays(startOfDay(from), offset)
+  x.setHours(hour)
+  return x
+}
+
+/** Valor para `<input type="datetime-local">` (hora local): "2026-10-20T09:00". */
+export function toLocalInput(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
+}
+
+/** Fecha límite de una tarea: "Hoy 15:00", "Mañana 09:00", "Ayer 10:30"; otro día, "lun, 20 oct · 09:00". */
+export function formatDue(iso: string, now: Date | number = Date.now()): string {
+  const d = new Date(iso)
+  const diff = Math.round((startOfDay(d).getTime() - startOfDay(now).getTime()) / 86_400_000)
+  const t = timeOnly.format(d)
+  if (diff === 0) return `Hoy ${t}`
+  if (diff === 1) return `Mañana ${t}`
+  if (diff === -1) return `Ayer ${t}`
+  return `${dayMonth.format(d)} · ${t}`
+}
+
 /** Duración corta: "45 min", "3 h", "2 d". */
 export function formatDuration(minutes: number): string {
   if (minutes < 60) return `${minutes} min`
