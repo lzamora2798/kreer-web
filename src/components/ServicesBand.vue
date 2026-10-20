@@ -11,11 +11,11 @@ const items = [
   <section id="servicios" class="bg-sand py-24">
     <div class="mx-auto max-w-6xl px-5">
       <p class="eyebrow">Servicios</p>
-      <h2 class="mt-3 max-w-xl text-4xl md:text-5xl">Una sola plataforma para cada operación.</h2>
+      <h2 class="mt-3 max-w-xl text-3xl md:text-4xl">Una sola plataforma para cada operación.</h2>
       <div class="mt-12 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
         <div v-for="s in items" :key="s.t" class="bg-paper p-8">
           <svg viewBox="0 0 24 24" class="h-7 w-7 text-brand-slate" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path :d="s.i" /></svg>
-          <h3 class="mt-6 text-2xl">{{ s.t }}</h3>
+          <h3 class="mt-6 text-xl">{{ s.t }}</h3>
           <p class="mt-2 text-sm leading-relaxed">{{ s.d }}</p>
         </div>
       </div>

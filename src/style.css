@@ -4,12 +4,13 @@
 
 @layer base {
   html { scroll-behavior: smooth; }
-  body { @apply bg-paper font-sans font-light text-ink-body antialiased; }
-  h1, h2, h3 { @apply font-display font-light text-ink; }
+  body { @apply bg-paper font-sans text-ink-body antialiased; }
+  h1, h2, h3 { @apply font-display font-semibold tracking-tight text-ink; }
 }
 @layer components {
   .btn { @apply inline-flex h-12 items-center justify-center gap-2 px-7 text-sm font-medium tracking-wide transition-colors; }
   .btn-primary { @apply bg-brand-600 text-white hover:bg-brand-700; }
+  .btn-light { @apply bg-paper text-brand-700 hover:bg-white; }
   .btn-ghost { @apply border border-greige text-paper hover:bg-white/10; }
   .field { @apply h-12 w-full border border-line bg-white px-4 text-sm text-ink outline-none focus:border-brand-600; }
   .eyebrow { @apply text-xs font-medium uppercase tracking-[0.2em] text-brand-slate; }

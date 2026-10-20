@@ -38,8 +38,11 @@ export default {
         ink: { DEFAULT: '#1C2A2E', body: '#3D4F54', soft: '#586C71' },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Garamond', '"Times New Roman"', 'serif'],
-        sans: ['Jost', '"Century Gothic"', 'Futura', 'system-ui', 'sans-serif'],
+        // ESTIMADO (no viene de la guía de marca): el logotipo es una geométrica de terminales planas
+        // (tipo Gotham); Poppins es la más cercana de las candidatas. Inter es el cuerpo, neutra y legible.
+        // Validar ambas con la tipografía oficial.
+        display: ['Poppins', '"Century Gothic"', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: { DEFAULT: '2px', sm: '2px', md: '2px', lg: '2px' },
     },
